@@ -25,6 +25,9 @@ public class LevelData : MonoBehaviour {
     public GameObject[,] HoverObjects;
     public GameObject[,] HoverData;
 
+    //parent gameobject
+    public GameObject gb;
+
     //Prefabs Start Here
     public GameObject Rock;
     public GameObject Gem;
@@ -32,11 +35,23 @@ public class LevelData : MonoBehaviour {
     public GameObject YellowGem;
     public GameObject GreenGem;
     public GameObject Explosion;
+    public GameObject ExplosionPoison;
     public GameObject HoverSquare;
     public GameObject DeathRock;
+    public GameObject Sinkhole;
 
+    public Sprite hoverSprite1;
+    public Sprite hoverSprite2;
+    public Sprite hoverSprite3;
+    public Sprite hoverSprite4;
+    public Sprite hoverSprite5;
+    public Sprite hoverSprite6;
+    public Sprite hoverSprite7;
+    public Sprite hoverSprite8;
+
+    public Text levelTitle;
     public Text brokeGemText;
-    public Text countGemText;
+    public Text deathRockText;
     public Text winText;
     public Text outOfBombText;
 
@@ -64,6 +79,8 @@ public class LevelData : MonoBehaviour {
     private float bombStartX = -7f;
     private float bombXScale = 5f;
     public float bombStartMidpoint = -4.5f;
+
+    public int id;
 
     //Sets the size of the game board
     public void setSquare(int x, int y)
@@ -143,5 +160,43 @@ public class LevelData : MonoBehaviour {
         }
 
         return Gem;
+    }
+
+    public GameObject RandomGem()
+    {
+        switch (Random.Range(0,4) % 4)
+        {
+            case 1:
+                return GreenGem;
+            case 2:
+                return RedGem;
+            case 3:
+                return YellowGem;
+        }
+
+        return Gem;
+    }
+
+    public Sprite RandomHover()
+    {
+        switch (Random.Range(0, 8) % 8)
+        {
+            case 1:
+                return hoverSprite1;
+            case 2:
+                return hoverSprite2;
+            case 3:
+                return hoverSprite3;
+            case 4:
+                return hoverSprite4;
+            case 5:
+                return hoverSprite5;
+            case 6:
+                return hoverSprite6;
+            case 7:
+                return hoverSprite7;
+        }
+
+        return hoverSprite8;
     }
 }

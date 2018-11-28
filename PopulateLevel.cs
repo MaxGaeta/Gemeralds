@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 /**
  * This class handles createing the GameObjects on the GameBoard and Inventory using information from LevelData
@@ -12,15 +13,15 @@ public class PopulateLevel : MonoBehaviour
     public LevelData level;
     public GameLogic logic;
     public InventoryController inventoryC;
+    public GameObject hoverCanvas;
 
-    private GameObject gb;
     private GameObject inv;
     private GameObject hov;
 
     private void Start()
     {
         //Create the GameBoard and Inventory Parent GameObjects for better organization
-        gb = new GameObject("GameBoard");
+        level.gb = new GameObject("GameBoard");
         inv = new GameObject("Inventory");
         hov = new GameObject("HoverBoard");
     }
@@ -54,11 +55,28 @@ public class PopulateLevel : MonoBehaviour
                                                 level.leftZ + (width * j + width / 2f) / level.squaresY);
 
                     //If gem, create the gem based on hashed value of x and y.  Otherwise creates rock.
-                    GameObject Obj = BoardData[i, j] == level.Gem ?
-                            Instantiate(level.GemHash(i, j), pos, Quaternion.Euler(-90f, 0f, Random.Range(0, 3) * 90f)) :
-                            Instantiate(BoardData[i, j], pos, Quaternion.Euler(-90f, 0f, Random.Range(0, 3) * 90f));
-                        
+                    GameObject Obj;
+
+                    if (BoardData[i, j] == level.Gem)
+                    {
+                        Obj = Instantiate(level.RandomGem(), pos, Quaternion.Euler(-90f, 0f, Random.Range(0, 3) * 90f)); //random gem colors
+                    }
+                    else if (BoardData[i, j] == level.Rock)
+                    {
+                        Obj = Instantiate(BoardData[i, j], pos, Quaternion.Euler(-90f, 0f, Random.Range(0, 3) * 90f));
+                    }
+                    else if (BoardData[i, j] == level.DeathRock)
+                    {
+                        Obj = Instantiate(BoardData[i, j], pos, Quaternion.Euler(-90f, 0f, 180f));
+                    }
+                    else 
+                    {
+                        //sinkhole
+                        Obj = Instantiate(BoardData[i, j], pos, Quaternion.Euler(180f, 0f, 180f));
+                    }
                     Obj.name = Obj.name.Substring(0, Obj.name.Length - 7) + "[" + i + ", " + j + "]";
+                    Vector3 scale = Obj.transform.localScale;
+                    Obj.transform.localScale = new Vector3(scale.x * 6.0f / level.squaresX, scale.y * 7.0f / level.squaresY,  scale.x * 6.0f / level.squaresX);
                     Obj.transform.SetParent(Parent.transform);
                     if (BoardData[i, j] == level.Gem)
                     {
@@ -115,16 +133,24 @@ public class PopulateLevel : MonoBehaviour
         {
             for (int j = 0; j < level.squaresY; j++)
             {
-               Vector3 pos = new Vector3(level.topX + (height * i + height / 2f) / level.squaresX, 3.5f,
+                Vector3 pos = new Vector3(level.topX + (height * i + height / 2f) / level.squaresX, 3.5f,
                                                 level.leftZ + (width * j + width / 2f) / level.squaresY);
-                GameObject Obj = Instantiate(BoardData[i, j], pos, Quaternion.identity);
+                GameObject Obj = Instantiate(BoardData[i,j], pos, Quaternion.identity);
+                Image img = Obj.GetComponent<Image>();
+                img.sprite = level.RandomHover();
+                img.preserveAspect = true;
+                img.color = Color.clear;
                 Obj.name = Obj.name.Substring(0, Obj.name.Length - 7) + "[" + i + ", " + j + "]";
+                Obj.transform.rotation = Quaternion.Euler(90, 0, 90);
+                Vector3 scale = Obj.transform.localScale;
+                Obj.transform.localScale = new Vector3(scale.x * 0.6f / level.squaresX, scale.y * 0.75f / level.squaresY, scale.x * 6.0f / level.squaresX);
                 Obj.transform.SetParent(Parent.transform);
-                Obj.SetActive(false);
 
                 Objs[i, j] = Obj;
             }
         }
+
+        Parent.transform.SetParent(hoverCanvas.transform);
 
         return Objs;
 
@@ -155,9 +181,9 @@ public class PopulateLevel : MonoBehaviour
         level.Inventory = null;
 
         //Reset Visuals
-        inventoryC.setColorOriginal(inventoryC.bomb1Image);
-        inventoryC.setColorOriginal(inventoryC.bomb2Image);
-        inventoryC.setColorOriginal(inventoryC.bomb3Image);
+        inventoryC.setColorOriginal(inventoryC.bomb1Image, inventoryC.bomb1Count, inventoryC.bomb1X, inventoryC.bomb1Shape);
+        inventoryC.setColorOriginal(inventoryC.bomb2Image, inventoryC.bomb2Count, inventoryC.bomb2X, inventoryC.bomb2Shape);
+        inventoryC.setColorOriginal(inventoryC.bomb3Image, inventoryC.bomb3Count, inventoryC.bomb3X, inventoryC.bomb3Shape);
 
         //Reset Gems
         GemAnimation.ResetAnimations();
@@ -176,7 +202,7 @@ public class PopulateLevel : MonoBehaviour
     public void Populate()
     {
         //Create each object using coordiates at width and height
-        level.Objects = CreateGameBoard(level.BoardData, gb);
+        level.Objects = CreateGameBoard(level.BoardData, level.gb);
         level.Inventory = createInvBombs(level.InventoryArray, inv);
         level.HoverObjects = CreateHoverBoard(level.HoverData, hov);
     }

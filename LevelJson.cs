@@ -3,7 +3,7 @@
  * */
 [System.Serializable]
 public class LevelJson {
-    public string levelName;
+    public int id;
     public int height;
     public int width;
     public int B1x3;
@@ -17,5 +17,9 @@ public class LevelJson {
     public int B3x3Cross;
     public int B5x5Cross;
     public int BINFxINFCross;
+    public int BLeftFirework;
+    public int BRightFirework;
+    public int BUpFirework;
+    public int BDownFirework;
     public int [] gameBoard;
 }
