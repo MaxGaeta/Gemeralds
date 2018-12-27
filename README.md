@@ -1,7 +1,7 @@
 # Gemeralds
 Gemeralds Game
-Currently being developed in CS 4154 Analytics Driven Game Design <br /> 
-Recently released to newgrounds gaming website (https://www.newgrounds.com/portal/view/719885)<br /> 
+Developed by myself and five other students in CS4154 Analytics Driven Game Design <br /> 
+Recently released to Kongregate gaming website https://www.kongregate.com/games/PenguinTuxStudio/gemeralds?acomplete=gemeralds <br /> 
 Uses Unity Engine and attached are the scripts to the game <br />
 Language is C# <br />
 
